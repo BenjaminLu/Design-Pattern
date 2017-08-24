@@ -10,7 +10,7 @@ import java.util.concurrent.*;
 
 public class TestSingleton {
     @Test
-    public void testSingleton () {
+    public void testSingleton() {
         List<FutureTask> taskList = new ArrayList<FutureTask>();
         ExecutorService executor = Executors.newCachedThreadPool();
         for (int i = 0; i < 100000; i++) {
@@ -46,7 +46,7 @@ public class TestSingleton {
     }
 
     @Test
-    public void testSingletonSimple () {
+    public void testSingletonSimple() {
         List<FutureTask> taskList = new ArrayList<FutureTask>();
         ExecutorService executor = Executors.newCachedThreadPool();
         for (int i = 0; i < 100000; i++) {
@@ -82,7 +82,7 @@ public class TestSingleton {
     }
 
     @Test
-    public void testSingletonFail () {
+    public void testSingletonFail() {
         List<FutureTask> taskList = new ArrayList<FutureTask>();
         ExecutorService executor = Executors.newCachedThreadPool();
         for (int i = 0; i < 100000; i++) {
@@ -117,6 +117,42 @@ public class TestSingleton {
         }
     }
 
+    @Test
+    public void testSingletonSlow() {
+        List<FutureTask> taskList = new ArrayList<FutureTask>();
+        ExecutorService executor = Executors.newCachedThreadPool();
+        for (int i = 0; i < 100000; i++) {
+            GetSingletonSlowTask task = new GetSingletonSlowTask();
+            FutureTask<SingletonSlow> futureTask = new FutureTask<SingletonSlow>(task);
+            taskList.add(futureTask);
+            executor.submit(futureTask);
+        }
+
+        executor.shutdown();
+
+        FutureTask<SingletonSlow> firstTask = taskList.get(0);
+        SingletonSlow firstInstance = null;
+        try {
+            firstInstance = firstTask.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        for (int i = 1; i < 100000; i++) {
+            FutureTask<SingletonSlow> task = taskList.get(i);
+            try {
+                SingletonSlow s = task.get();
+                assertEquals(firstInstance, s);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     class GetSingletonTask implements Callable<Singleton> {
 
         public Singleton call() throws Exception {
@@ -135,6 +171,13 @@ public class TestSingleton {
 
         public SingletonFail call() throws Exception {
             return SingletonFail.getInstance();
+        }
+    }
+
+    class GetSingletonSlowTask implements Callable<SingletonSlow> {
+
+        public SingletonSlow call() throws Exception {
+            return SingletonSlow.getInstance();
         }
     }
 }

@@ -10,6 +10,7 @@ public class Singleton {
             // only one thread can enter this section
             synchronized (Singleton.class) {
                 if (s == null) {
+                    // lazy instantiate
                     s = new Singleton();
                 }
             }
