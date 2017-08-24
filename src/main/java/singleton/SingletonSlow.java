@@ -1,7 +1,7 @@
 package singleton;
 
 public class SingletonSlow {
-    private static SingletonSlow s;
+    private static volatile SingletonSlow s;
     private SingletonSlow() {}
 
     public static synchronized SingletonSlow getInstance() {

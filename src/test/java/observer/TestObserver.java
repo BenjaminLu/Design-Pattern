@@ -1,5 +1,7 @@
 package observer;
 
+import observer.jdk.CurrentConditionsDisplay;
+import observer.jdk.WeatherData;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -29,5 +31,20 @@ public class TestObserver {
 
         assertEquals(expectedPrice, originalPriceObserver.price, 0);
         assertEquals(expectedRoundedPrice, roundPriceObserver.price);
+    }
+
+    @Test
+    public void testObservable() {
+        WeatherData w = new WeatherData();
+        CurrentConditionsDisplay d = new CurrentConditionsDisplay();
+        d.setObservable(w);
+        w.setMeasurements(80, 80, 80);
+
+        assertEquals("Current conditions: " + 80F + "F degrees and " + 80F + "% humidity", d.display());
+
+        d.deleteObservable();
+
+        w.setMeasurements(90, 90, 90);
+        assertEquals("Current conditions: " + 80F + "F degrees and " + 80F + "% humidity", d.display());
     }
 }
