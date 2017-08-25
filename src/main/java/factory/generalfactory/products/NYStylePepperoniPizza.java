@@ -1,0 +1,19 @@
+package factory.generalfactory.products;
+
+public class NYStylePepperoniPizza extends Pizza {
+    public void prepare() {
+
+    }
+
+    public void bake() {
+
+    }
+
+    public void cut() {
+
+    }
+
+    public void box() {
+
+    }
+}
