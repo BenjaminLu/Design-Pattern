@@ -19,6 +19,7 @@ public class TestObserver {
         roundPriceObserver.subscribe(subject);
 
         subject.update(newPrice);
+
         assertEquals(expectedPrice, originalPriceObserver.price, 0);
         assertEquals(expectedRoundedPrice, roundPriceObserver.price);
 
